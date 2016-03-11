@@ -37,5 +37,17 @@ trait MultiFieldDocSpec extends MongoBenchmarkHelpers { self: Bench[_] =>
       2.seconds
       )
     }
+
+    comparison.compare("just insert").using(scale map (_/10)) { (driver, num) =>
+      Await.result(createAndInsert(driver, num), 2.seconds)
+    }
+
+    comparison.compare("just get").using(scale map (_/10)) { (driver, num) =>
+      Await.result(createAndInsert(driver, num)
+        .flatMap(id => Future.traverse(1 to 100)(i => driver.get(id.toString))),
+        40.seconds)
+    }
+
+
   }
 }

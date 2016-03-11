@@ -1,6 +1,6 @@
 import java.util.UUID
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 
 import org.scalameter.api.{Gen, Bench}
@@ -37,6 +37,20 @@ trait NestedDocSpec extends MongoBenchmarkHelpers { self: Bench[_] =>
         createAndInsert(driver, num).flatMap(id => driver.get(id.toString)),
         3.seconds
       )
+    }
+
+    comparison.compare("just insert").using(scale map (_/100+1)) { (driver, num) =>
+      Await.result(createAndInsert(driver, num), 2.seconds)
+    }
+
+    comparison.compare("just get").using(scale map (_/100+1)) { (driver, num) =>
+      val create = createAndInsert(driver, num)
+      val getAll = create.flatMap { id =>
+        (1 to 100).foldLeft(Future.successful(0)) { (acc, i) =>
+          acc.flatMap(total => driver.get(id.toString).map(_ => total+1))
+        }
+      }
+      Await.result(getAll, 40.seconds)
     }
 
   }
