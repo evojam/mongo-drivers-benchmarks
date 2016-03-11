@@ -11,13 +11,17 @@ import com.evojam.Collection
 import com.evojam.documents.SmallDoc
 import com.evojam.driver.JavaDriverProvider
 import com.evojam.reactivemongo.ReactivemongoProvider
+import com.evojam.scala.ScalaProvider
 
 trait SmallDocSpec extends MongoBenchmarkHelpers { self: Bench.OfflineReport =>
   val scale: Gen[Int]
 
 
   performance of "Handling flat documents" in {
-    val comparison = new DriverComparison(ReactivemongoProvider[SmallDoc], JavaDriverProvider[SmallDoc])
+    val comparison = new DriverComparison(
+      ReactivemongoProvider[SmallDoc],
+      JavaDriverProvider[SmallDoc],
+      ScalaProvider[SmallDoc])
 
     def createAndInsert(driver: Collection[SmallDoc], i: Int): Future[UUID] = {
       val id = UUID.randomUUID()

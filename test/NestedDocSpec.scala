@@ -13,11 +13,16 @@ import com.evojam.reactivemongo.ReactivemongoProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import com.evojam.scala.ScalaProvider
+
 trait NestedDocSpec extends MongoBenchmarkHelpers { self: Bench[_] =>
   val scale: Gen[Int]
 
   performance of "Handling nested documents" in {
-    val comparison = new DriverComparison(ReactivemongoProvider[NestedDoc], JavaDriverProvider[NestedDoc])
+    val comparison = new DriverComparison(
+      ReactivemongoProvider[NestedDoc],
+      JavaDriverProvider[NestedDoc],
+      ScalaProvider[NestedDoc])
     def create(i: Int, id: UUID): NestedDoc = i match {
       case 0 => NestedDoc(s"leaf-$id", id.toString, None, None)
       case _ => NestedDoc(s"node-depth-$i", id.toString, Some(create(i - 1, id)), Some(create(i - 1, id)))

@@ -11,12 +11,16 @@ import com.evojam.Collection
 import com.evojam.documents.StringMapFormatter._
 import com.evojam.driver.JavaDriverProvider
 import com.evojam.reactivemongo.ReactivemongoProvider
+import com.evojam.scala.ScalaProvider
 
 trait MultiFieldDocSpec extends MongoBenchmarkHelpers { self: Bench[_] =>
   val scale: Gen[Int]
 
   performance of "Handling multi-field documents" in {
-    val comparison = new DriverComparison(ReactivemongoProvider[Map[String, String]], JavaDriverProvider[Map[String, String]])
+    val comparison = new DriverComparison(
+      ReactivemongoProvider[Map[String, String]],
+      JavaDriverProvider[Map[String, String]],
+      ScalaProvider[Map[String, String]])
 
     def create(size: Int, id: UUID): Map[String, String] =
       Vector.fill(size)(Random.alphanumeric.take(20).mkString, "field content").toMap + ("_id" -> id.toString)

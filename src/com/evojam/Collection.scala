@@ -1,6 +1,7 @@
 package com.evojam
 
-import scala.concurrent.Future
+import _root_.scala.concurrent.Future
+
 
 trait Collection[Document] {
 

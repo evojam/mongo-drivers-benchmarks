@@ -22,6 +22,7 @@ libraryDependencies ++= Seq(
   "com.storm-enroute" %% "scalameter" % "0.7",
   "org.mongodb" % "mongodb-driver-async" % "3.2.2",
   "org.reactivemongo" %% "reactivemongo" % "0.11.10",
+	"org.mongodb.scala" %% "mongo-scala-driver" % "1.1.0",
   "org.slf4j" % "slf4j-log4j12" % "1.7.18"
 
 )

@@ -7,12 +7,14 @@ import com.evojam.Collection
 
 trait MongoBenchmarkHelpers {  self: Bench[_] =>
 
-  class DriverComparison[T](reactive: => Collection[T], java: => Collection[T]) {
+  class DriverComparison[T](reactive: => Collection[T], java: => Collection[T],
+                            scala: =>Collection[T]) {
     def compare(method: String) = new SingleMethodComparison(method)
 
     class SingleMethodComparison(name: String) {
       def using[A](gen: Gen[A])(block: (Collection[T], A) => Unit) = {
         measure method name in {
+          runWithDriver(gen, () => scala, "scala")(block)
           runWithDriver(gen, () => reactive, "reactivemongo")(block)
           runWithDriver(gen, () => java, "java")(block)
         }
@@ -35,5 +37,6 @@ trait MongoBenchmarkHelpers {  self: Bench[_] =>
     }
 
   }
+
 
 }
